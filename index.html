@@ -470,35 +470,11 @@
       color: var(--muted);
     }
 
-    /* 右下角 Kuromi 图片（你上传 kuromi.png 后自动显示） */
-    .kuromi{
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      width: 110px;
-      height: auto;
-      opacity: .92;
-      filter: drop-shadow(0 18px 22px rgba(0,0,0,.55));
-      pointer-events: none;
-      z-index: 99;
-    }
-
-    @media (max-width: 380px){
-      .grid{ grid-template-columns: 1fr; }
-      .scene{ width: 250px; height: 200px; }
-      .kuromi{ width: 92px; }
-    }
-  </style>
-</head>
-
-<body>
-  <img class="kuromi" src="kuromi.png" alt="Kuromi" />
-
   <div class="wrap">
     <div class="card">
       <div class="header">
         <h1>🎀 远远の一番くじ 🎀</h1>
-        <p>朋友专用 · 趣味抽赏（无支付）</p>
+        <p>远远专用 · 如如抽赏</p>
       </div>
 
       <div class="boxZone">
@@ -537,7 +513,7 @@
         <button class="btnMain" id="drawBtn">抽一次</button>
         <button class="btnGhost" id="resetBtn">重置奖池</button>
       </div>
-      <div class="hint" id="hint">提示：A/B/C 有稀有光效 + 庆祝特效 ✨</div>
+      <div class="hint" id="hint">提示：A/B/C 有稀有光效✨</div>
     </div>
   </div>
 
