@@ -19,8 +19,6 @@
 
       --line: rgba(210,185,255,.20);
       --panel: rgba(255,255,255,.08);
-      --panel2: rgba(255,255,255,.10);
-
       --shadow: 0 20px 60px rgba(0,0,0,.55);
     }
 
@@ -40,7 +38,7 @@
 
     .wrap{
       width:min(560px, 92vw);
-      margin: 18px auto 44px;
+      margin: 18px auto 56px;
       padding: 18px 14px 26px;
     }
 
@@ -74,7 +72,7 @@
       color: var(--muted);
     }
 
-    /* ===== 盲盒舞台 ===== */
+    /* ===== 舞台 / 盲盒 ===== */
     .boxZone{
       padding: 14px 16px 12px;
       display:flex;
@@ -91,28 +89,61 @@
       justify-content:center;
       padding: 8px 0 2px;
       position:relative;
-      min-height: 210px;
+      min-height: 230px;
+      border-radius: 22px;
     }
 
-    /* 地面光圈 */
+    /* 地面基础光圈 */
     .groundGlow{
       position:absolute;
-      width: 280px;
-      height: 60px;
-      bottom: 26px;
+      width: 300px;
+      height: 70px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(90deg, rgba(255,121,198,.55), rgba(167,139,250,.55), rgba(255,210,122,.42));
+      background: linear-gradient(90deg, rgba(255,121,198,.50), rgba(167,139,250,.55), rgba(255,210,122,.42));
       filter: blur(18px);
-      opacity:.55;
+      opacity:.45;
       border-radius: 999px;
       pointer-events:none;
     }
 
+    /* 稀有奖打光层（A金/B紫/C粉） */
+    .rarityGlow{
+      position:absolute;
+      inset: 0;
+      border-radius: 22px;
+      pointer-events:none;
+      opacity:0;
+      transition: opacity .25s ease;
+      background:
+        radial-gradient(420px 220px at 50% 55%, rgba(255,255,255,.10), transparent 60%),
+        radial-gradient(420px 220px at 50% 55%, rgba(167,139,250,.18), transparent 62%);
+      filter: blur(0.2px);
+    }
+    .stage.glowA .rarityGlow{
+      opacity:1;
+      background:
+        radial-gradient(520px 260px at 50% 56%, rgba(255,210,122,.50), transparent 62%),
+        radial-gradient(520px 260px at 50% 56%, rgba(255,255,255,.18), transparent 66%);
+    }
+    .stage.glowB .rarityGlow{
+      opacity:1;
+      background:
+        radial-gradient(520px 260px at 50% 56%, rgba(167,139,250,.48), transparent 62%),
+        radial-gradient(520px 260px at 50% 56%, rgba(255,255,255,.14), transparent 66%);
+    }
+    .stage.glowC .rarityGlow{
+      opacity:1;
+      background:
+        radial-gradient(520px 260px at 50% 56%, rgba(255,121,198,.46), transparent 62%),
+        radial-gradient(520px 260px at 50% 56%, rgba(255,255,255,.14), transparent 66%);
+    }
+
     /* 3D 透视容器 */
     .scene{
-      width: 260px;
-      height: 200px;
+      width: 270px;
+      height: 210px;
       perspective: 900px;
       position:relative;
       z-index:2;
@@ -130,9 +161,8 @@
       filter: drop-shadow(0 22px 26px rgba(0,0,0,.55));
     }
 
-    /* 摇晃动画：左右 + 轻微旋转 */
     .boxRig.shake{
-      animation: shake .42s ease-in-out;
+      animation: shake .48s ease-in-out;
     }
     @keyframes shake{
       0%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(0) rotateZ(0deg) }
@@ -143,7 +173,7 @@
       100%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(0) rotateZ(0deg) }
     }
 
-    /* 盒子尺寸 */
+    /* 盒子本体 */
     .cube{
       position:absolute;
       left: 50%;
@@ -154,7 +184,6 @@
       transform: translate(-50%, -50%);
     }
 
-    /* 面通用 */
     .face{
       position:absolute;
       width: 170px;
@@ -166,7 +195,6 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
     }
 
-    /* 正面 */
     .front{
       transform: translateZ(60px);
       background:
@@ -175,7 +203,6 @@
         linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
     }
 
-    /* 右侧面 */
     .right{
       transform: rotateY(90deg) translateZ(85px);
       width: 120px;
@@ -185,7 +212,6 @@
       border-radius: 16px;
     }
 
-    /* 顶面（底座顶面，不是盖子） */
     .topBase{
       transform: rotateX(90deg) translateZ(60px);
       height: 170px;
@@ -196,7 +222,6 @@
       border-radius: 16px;
     }
 
-    /* 正面问号牌 */
     .mark{
       position:absolute;
       left:50%; top:50%;
@@ -218,7 +243,6 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
-    /* 盒子底部彩光条（类似图2底边彩色） */
     .neonEdge{
       position:absolute;
       left: -12%;
@@ -228,11 +252,11 @@
       border-radius: 999px;
       background: linear-gradient(90deg, rgba(255,121,198,.55), rgba(167,139,250,.55), rgba(255,210,122,.45));
       filter: blur(14px);
-      opacity:.58;
+      opacity:.55;
       pointer-events:none;
     }
 
-    /* ===== 盖子（可打开） ===== */
+    /* ===== 盖子（开合） ===== */
     .lid{
       position:absolute;
       left: 50%;
@@ -259,7 +283,6 @@
     }
 
     .lidLip{
-      /* 盖子的前沿 */
       position:absolute;
       left: 12px;
       right: 12px;
@@ -269,9 +292,8 @@
       opacity:.8;
     }
 
-    /* 开盖动画 */
     .lid.open{
-      animation: lidOpen .55s cubic-bezier(.2,.9,.2,1) forwards;
+      animation: lidOpen .60s cubic-bezier(.2,.9,.2,1) forwards;
     }
     @keyframes lidOpen{
       0%{ transform: translate(-50%, -50%) rotateX(0deg) }
@@ -279,7 +301,6 @@
       100%{ transform: translate(-50%, -60%) rotateX(-55deg) }
     }
 
-    /* 合盖回去 */
     .lid.close{
       animation: lidClose .35s ease forwards;
     }
@@ -288,22 +309,23 @@
       100%{ transform: translate(-50%, -50%) rotateX(0deg) }
     }
 
-    /* ===== 奖项从盒子中间弹出变大 ===== */
+    /* ===== 奖品弹出：慢一点、从盒子里出来变大 ===== */
     .prizePop{
       position:absolute;
       left: 50%;
       top: 52%;
-      transform: translate(-50%, -50%) scale(.2);
+      transform: translate(-50%, -50%) scale(.18);
       opacity: 0;
       z-index: 30;
       pointer-events:none;
-      width: min(340px, 86vw);
+      width: min(360px, 88vw);
       text-align:center;
-      animation: popOut .62s cubic-bezier(.15,.95,.15,1) forwards;
+      animation: popOut 820ms cubic-bezier(.10,.95,.18,1) forwards;
     }
     @keyframes popOut{
-      0%{ opacity:0; transform: translate(-50%, -40%) scale(.2) }
-      40%{ opacity:1; transform: translate(-50%, -70%) scale(1.08) }
+      0%{ opacity:0; transform: translate(-50%, -38%) scale(.16) }
+      35%{ opacity:1; transform: translate(-50%, -62%) scale(.95) }
+      70%{ opacity:1; transform: translate(-50%, -70%) scale(1.06) }
       100%{ opacity:1; transform: translate(-50%, -66%) scale(1.00) }
     }
 
@@ -314,13 +336,29 @@
       gap: 10px;
       padding: 12px 18px;
       border-radius: 999px;
-      background: rgba(0,0,0,.40);
+      background: rgba(0,0,0,.42);
       border: 1px solid rgba(210,185,255,.24);
       box-shadow: 0 22px 55px rgba(0,0,0,.45);
       backdrop-filter: blur(10px);
       font-weight: 950;
       letter-spacing: .3px;
       font-size: 22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .badge::after{
+      content:"";
+      position:absolute;
+      inset:-20%;
+      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.35), transparent 60%);
+      transform: translateX(-70%) rotate(10deg);
+      animation: badgeShine 700ms ease-out forwards;
+      opacity:0;
+    }
+    @keyframes badgeShine{
+      0%{ opacity:0; transform: translateX(-70%) rotate(12deg) }
+      30%{ opacity:1 }
+      100%{ opacity:0; transform: translateX(70%) rotate(12deg) }
     }
     .sub{
       margin-top: 8px;
@@ -329,7 +367,7 @@
       text-shadow: 0 14px 30px rgba(0,0,0,.45);
     }
 
-    /* ===== A/B/C 特效 ===== */
+    /* ===== A/B/C 庆祝粒子 ===== */
     .fx{
       position:absolute;
       inset:0;
@@ -349,23 +387,10 @@
     @keyframes spark{
       0%{ opacity:0; transform: translate(var(--x0), var(--y0)) scale(.6) rotate(0deg) }
       15%{ opacity:1 }
-      100%{ opacity:0; transform: translate(var(--x1), var(--y1)) scale(1.2) rotate(280deg) }
-    }
-    .shine{
-      position:absolute;
-      inset:-20%;
-      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.55), transparent 60%);
-      transform: translateX(-70%) rotate(10deg);
-      animation: shine 650ms ease-out forwards;
-      opacity:0;
-    }
-    @keyframes shine{
-      0%{ opacity:0; transform: translateX(-70%) rotate(12deg) }
-      30%{ opacity:1 }
-      100%{ opacity:0; transform: translateX(70%) rotate(12deg) }
+      100%{ opacity:0; transform: translate(var(--x1), var(--y1)) scale(1.25) rotate(280deg) }
     }
 
-    /* ===== 奖池（盒子下半部分） ===== */
+    /* ===== 奖池（剩余） ===== */
     .pool{
       width:100%;
       margin-top: 10px;
@@ -445,15 +470,30 @@
       color: var(--muted);
     }
 
+    /* 右下角 Kuromi 图片（你上传 kuromi.png 后自动显示） */
+    .kuromi{
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      width: 110px;
+      height: auto;
+      opacity: .92;
+      filter: drop-shadow(0 18px 22px rgba(0,0,0,.55));
+      pointer-events: none;
+      z-index: 99;
+    }
+
     @media (max-width: 380px){
       .grid{ grid-template-columns: 1fr; }
-      .scene{ width: 240px; height: 190px; }
-      .cube .face{ border-radius: 14px; }
+      .scene{ width: 250px; height: 200px; }
+      .kuromi{ width: 92px; }
     }
   </style>
 </head>
 
 <body>
+  <img class="kuromi" src="kuromi.png" alt="Kuromi" />
+
   <div class="wrap">
     <div class="card">
       <div class="header">
@@ -463,17 +503,16 @@
 
       <div class="boxZone">
         <div class="stage" id="stage">
+          <div class="rarityGlow"></div>
           <div class="groundGlow"></div>
 
           <div class="scene">
             <div class="boxRig" id="boxRig">
-              <!-- 盖子 -->
               <div class="lid" id="lid">
                 <div class="lidTop"></div>
                 <div class="lidLip"></div>
               </div>
 
-              <!-- 盒子本体 -->
               <div class="cube">
                 <div class="face front">
                   <div class="mark"><span>?</span></div>
@@ -485,11 +524,9 @@
             </div>
           </div>
 
-          <!-- 特效层 -->
           <div class="fx" id="fx"></div>
         </div>
 
-        <!-- 奖池 -->
         <div class="pool">
           <div class="grid" id="poolGrid"></div>
           <div class="total" id="totalText">总剩余：— 抽</div>
@@ -500,12 +537,12 @@
         <button class="btnMain" id="drawBtn">抽一次</button>
         <button class="btnGhost" id="resetBtn">重置奖池</button>
       </div>
-      <div class="hint" id="hint">提示：抽到 A/B/C 会有庆祝特效 ✨</div>
+      <div class="hint" id="hint">提示：A/B/C 有稀有光效 + 庆祝特效 ✨</div>
     </div>
   </div>
 
   <script>
-    // ✅ 在这里改数量（你要的：A1 B1 C1 D2 E2 F3）
+    // ✅ 在这里改数量：A1 B1 C1 D2 E2 F3
     const initialPrizes = [
       { name: "A赏", count: 1 },
       { name: "B赏", count: 1 },
@@ -516,6 +553,7 @@
     ];
     let prizes = structuredClone(initialPrizes);
 
+    const stage = document.getElementById("stage");
     const poolGrid = document.getElementById("poolGrid");
     const totalText = document.getElementById("totalText");
     const hint = document.getElementById("hint");
@@ -525,7 +563,6 @@
 
     const boxRig = document.getElementById("boxRig");
     const lid = document.getElementById("lid");
-    const stage = document.getElementById("stage");
     const fx = document.getElementById("fx");
 
     function totalLeft(){ return prizes.reduce((s,p)=>s+p.count,0); }
@@ -539,9 +576,10 @@
         </div>
       `).join("");
       totalText.textContent = `总剩余：${totalLeft()} 抽`;
+
       drawBtn.disabled = totalLeft() === 0;
       drawBtn.style.opacity = drawBtn.disabled ? 0.55 : 1;
-      hint.textContent = totalLeft()===0 ? "已经全部抽完啦（可点重置）" : "提示：抽到 A/B/C 会有庆祝特效 ✨";
+      hint.textContent = totalLeft()===0 ? "已经全部抽完啦（可点重置）" : "提示：A/B/C 有稀有光效 + 庆祝特效 ✨";
     }
 
     function pickOne(){
@@ -554,26 +592,23 @@
 
     function clearEffects(){
       fx.innerHTML = "";
+      stage.classList.remove("glowA","glowB","glowC");
       const old = document.querySelector(".prizePop");
       if(old) old.remove();
     }
 
     function celebrate(){
-      const shine = document.createElement("div");
-      shine.className = "shine";
-      fx.appendChild(shine);
-
-      const colors = ["rgba(255,121,198,.95)","rgba(167,139,250,.95)","rgba(255,210,122,.90)","rgba(255,255,255,.92)"];
+      const colors = ["rgba(255,121,198,.95)","rgba(167,139,250,.95)","rgba(255,210,122,.92)","rgba(255,255,255,.92)"];
       const cx = 50, cy = 48;
-      for(let i=0;i<32;i++){
+      for(let i=0;i<34;i++){
         const s = document.createElement("div");
         s.className = "spark";
         s.style.background = colors[i % colors.length];
 
         const x0 = `${cx + (Math.random()*10-5)}%`;
         const y0 = `${cy + (Math.random()*10-6)}%`;
-        const dx = (Math.random() * 160 - 80);
-        const dy = (Math.random() * 180 - 40);
+        const dx = (Math.random() * 170 - 85);
+        const dy = (Math.random() * 190 - 45);
 
         s.style.setProperty("--x0", `calc(${x0} - 0px)`);
         s.style.setProperty("--y0", `calc(${y0} - 0px)`);
@@ -587,9 +622,18 @@
       }
     }
 
+    function applyRarityGlow(name){
+      stage.classList.remove("glowA","glowB","glowC");
+      if(name==="A赏") stage.classList.add("glowA");
+      if(name==="B赏") stage.classList.add("glowB");
+      if(name==="C赏") stage.classList.add("glowC");
+    }
+
     function showPop(picked){
       const left = totalLeft();
       const isTop = ["A赏","B赏","C赏"].includes(picked.name);
+
+      applyRarityGlow(picked.name);
 
       const pop = document.createElement("div");
       pop.className = "prizePop";
@@ -601,22 +645,23 @@
 
       if(isTop) celebrate();
 
+      // 2s 后自动淡出
       setTimeout(()=>{
         pop.style.transition = "opacity .25s ease";
         pop.style.opacity = "0";
         setTimeout(()=>pop.remove(), 260);
-      }, 1400);
+        // 稀有打光也淡出
+        setTimeout(()=> stage.classList.remove("glowA","glowB","glowC"), 260);
+      }, 2000);
     }
 
     function openLid(){
-      lid.classList.remove("close");
-      lid.classList.remove("open");
+      lid.classList.remove("close","open");
       void lid.offsetWidth;
       lid.classList.add("open");
     }
     function closeLid(){
-      lid.classList.remove("open");
-      lid.classList.remove("close");
+      lid.classList.remove("open","close");
       void lid.offsetWidth;
       lid.classList.add("close");
     }
@@ -635,7 +680,7 @@
           <div class="sub">点击“重置奖池”可重新开始</div>
         `;
         stage.appendChild(pop);
-        setTimeout(()=>pop.remove(), 1200);
+        setTimeout(()=>pop.remove(), 1400);
         return;
       }
 
@@ -649,17 +694,17 @@
       boxRig.classList.add("shake");
 
       // 2) 摇晃中段开盖
-      setTimeout(()=> openLid(), 180);
+      setTimeout(()=> openLid(), 190);
 
-      // 3) 开盖后出奖
+      // 3) 开盖后“慢一点”出奖
       setTimeout(()=>{
         const picked = pickOne();
         renderPool();
         showPop(picked);
-      }, 420);
+      }, 520);
 
-      // 4) 盖子合回去（稍晚一点）
-      setTimeout(()=> closeLid(), 980);
+      // 4) 稍晚合盖
+      setTimeout(()=> closeLid(), 1180);
 
       // 5) 恢复按钮
       setTimeout(()=>{
@@ -667,7 +712,7 @@
         drawBtn.disabled = totalLeft() === 0;
         drawBtn.style.opacity = drawBtn.disabled ? 0.55 : 1;
         busy = false;
-      }, 1050);
+      }, 1250);
     }
 
     drawBtn.addEventListener("click", doDraw);
@@ -685,7 +730,7 @@
         <div class="sub">可以重新开始抽啦～</div>
       `;
       stage.appendChild(pop);
-      setTimeout(()=>pop.remove(), 900);
+      setTimeout(()=>pop.remove(), 1100);
     });
 
     renderPool();
