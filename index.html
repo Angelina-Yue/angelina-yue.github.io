@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>远远の一番くじ</title>
+  <style>
+    :root{
+      --bg0:#07040d;
+      --bg1:#0f0720;
+      --bg2:#160a2a;
+
+      --text:#f4ecff;
+      --muted: rgba(244,236,255,.72);
+
+      --violet:#a78bfa;
+      --pink:#ff79c6;
+      --gold:#ffd27a;
+
+      --line: rgba(210,185,255,.20);
+      --panel: rgba(255,255,255,.08);
+      --panel2: rgba(255,255,255,.10);
+
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-rounded, system-ui, -apple-system, "PingFang SC","Microsoft YaHei", Arial;
+      color: var(--text);
+      background:
+        radial-gradient(900px 520px at 50% 10%, rgba(167,139,250,.28), transparent 60%),
+        radial-gradient(800px 540px at 18% 70%, rgba(255,121,198,.14), transparent 60%),
+        radial-gradient(800px 540px at 82% 76%, rgba(255,210,122,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1) 45%, var(--bg2));
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      width:min(560px, 92vw);
+      margin: 18px auto 44px;
+      padding: 18px 14px 26px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+      position:relative;
+    }
+
+    .header{
+      padding: 18px 18px 10px;
+      text-align:center;
+      border-bottom: 1px dashed rgba(210,185,255,.18);
+      background:
+        radial-gradient(560px 160px at 50% 0%, rgba(167,139,250,.22), transparent 60%),
+        radial-gradient(560px 180px at 50% 0%, rgba(255,121,198,.10), transparent 70%);
+    }
+    .header h1{
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: .8px;
+      text-shadow: 0 12px 34px rgba(0,0,0,.45);
+    }
+    .header p{
+      margin: 8px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ===== 盲盒舞台 ===== */
+    .boxZone{
+      padding: 14px 16px 12px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 10px;
+      position:relative;
+    }
+
+    .stage{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 8px 0 2px;
+      position:relative;
+      min-height: 210px;
+    }
+
+    /* 地面光圈 */
+    .groundGlow{
+      position:absolute;
+      width: 280px;
+      height: 60px;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, rgba(255,121,198,.55), rgba(167,139,250,.55), rgba(255,210,122,.42));
+      filter: blur(18px);
+      opacity:.55;
+      border-radius: 999px;
+      pointer-events:none;
+    }
+
+    /* 3D 透视容器 */
+    .scene{
+      width: 260px;
+      height: 200px;
+      perspective: 900px;
+      position:relative;
+      z-index:2;
+    }
+
+    /* 整个盒子（可摇晃） */
+    .boxRig{
+      width: 100%;
+      height: 100%;
+      position:absolute;
+      left:0; top:0;
+      transform-style: preserve-3d;
+      transform: translateY(6px) rotateX(18deg) rotateY(-18deg);
+      transform-origin: 50% 78%;
+      filter: drop-shadow(0 22px 26px rgba(0,0,0,.55));
+    }
+
+    /* 摇晃动画：左右 + 轻微旋转 */
+    .boxRig.shake{
+      animation: shake .42s ease-in-out;
+    }
+    @keyframes shake{
+      0%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(0) rotateZ(0deg) }
+      15%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(-10px) rotateZ(-2deg) }
+      35%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(12px) rotateZ(2.5deg) }
+      55%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(-12px) rotateZ(-2.5deg) }
+      75%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(10px) rotateZ(2deg) }
+      100%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(0) rotateZ(0deg) }
+    }
+
+    /* 盒子尺寸 */
+    .cube{
+      position:absolute;
+      left: 50%;
+      top: 56%;
+      width: 170px;
+      height: 120px;
+      transform-style: preserve-3d;
+      transform: translate(-50%, -50%);
+    }
+
+    /* 面通用 */
+    .face{
+      position:absolute;
+      width: 170px;
+      height: 120px;
+      border-radius: 16px;
+      border: 1px solid rgba(210,185,255,.22);
+      background: rgba(0,0,0,.22);
+      overflow:hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+
+    /* 正面 */
+    .front{
+      transform: translateZ(60px);
+      background:
+        radial-gradient(160px 90px at 30% 25%, rgba(167,139,250,.20), transparent 60%),
+        radial-gradient(160px 90px at 70% 70%, rgba(255,121,198,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
+    }
+
+    /* 右侧面 */
+    .right{
+      transform: rotateY(90deg) translateZ(85px);
+      width: 120px;
+      background:
+        radial-gradient(120px 80px at 50% 30%, rgba(167,139,250,.16), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.26));
+      border-radius: 16px;
+    }
+
+    /* 顶面（底座顶面，不是盖子） */
+    .topBase{
+      transform: rotateX(90deg) translateZ(60px);
+      height: 170px;
+      width: 170px;
+      background:
+        radial-gradient(160px 110px at 50% 55%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
+      border-radius: 16px;
+    }
+
+    /* 正面问号牌 */
+    .mark{
+      position:absolute;
+      left:50%; top:50%;
+      transform: translate(-50%, -50%);
+      width: 112px;
+      height: 70px;
+      border-radius: 14px;
+      border: 1px solid rgba(210,185,255,.22);
+      background: rgba(0,0,0,.28);
+      display:grid;
+      place-items:center;
+      box-shadow: 0 18px 34px rgba(0,0,0,.35);
+    }
+    .mark span{
+      font-size: 52px;
+      font-weight: 900;
+      line-height: 1;
+      color: rgba(244,236,255,.92);
+      text-shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+
+    /* 盒子底部彩光条（类似图2底边彩色） */
+    .neonEdge{
+      position:absolute;
+      left: -12%;
+      right:-12%;
+      bottom: -14px;
+      height: 36px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,121,198,.55), rgba(167,139,250,.55), rgba(255,210,122,.45));
+      filter: blur(14px);
+      opacity:.58;
+      pointer-events:none;
+    }
+
+    /* ===== 盖子（可打开） ===== */
+    .lid{
+      position:absolute;
+      left: 50%;
+      top: calc(56% - 74px);
+      width: 182px;
+      height: 54px;
+      transform-style: preserve-3d;
+      transform-origin: 50% 100%;
+      transform: translate(-50%, -50%) rotateX(0deg);
+      z-index: 6;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,.45));
+    }
+
+    .lidTop{
+      position:absolute;
+      inset:0;
+      border-radius: 16px;
+      border: 1px solid rgba(210,185,255,.22);
+      background:
+        radial-gradient(160px 90px at 30% 40%, rgba(167,139,250,.20), transparent 60%),
+        radial-gradient(160px 90px at 70% 70%, rgba(255,121,198,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.22));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+
+    .lidLip{
+      /* 盖子的前沿 */
+      position:absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 10px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(244,236,255,.28), transparent);
+      opacity:.8;
+    }
+
+    /* 开盖动画 */
+    .lid.open{
+      animation: lidOpen .55s cubic-bezier(.2,.9,.2,1) forwards;
+    }
+    @keyframes lidOpen{
+      0%{ transform: translate(-50%, -50%) rotateX(0deg) }
+      45%{ transform: translate(-50%, -58%) rotateX(-42deg) }
+      100%{ transform: translate(-50%, -60%) rotateX(-55deg) }
+    }
+
+    /* 合盖回去 */
+    .lid.close{
+      animation: lidClose .35s ease forwards;
+    }
+    @keyframes lidClose{
+      0%{ transform: translate(-50%, -60%) rotateX(-55deg) }
+      100%{ transform: translate(-50%, -50%) rotateX(0deg) }
+    }
+
+    /* ===== 奖项从盒子中间弹出变大 ===== */
+    .prizePop{
+      position:absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%) scale(.2);
+      opacity: 0;
+      z-index: 30;
+      pointer-events:none;
+      width: min(340px, 86vw);
+      text-align:center;
+      animation: popOut .62s cubic-bezier(.15,.95,.15,1) forwards;
+    }
+    @keyframes popOut{
+      0%{ opacity:0; transform: translate(-50%, -40%) scale(.2) }
+      40%{ opacity:1; transform: translate(-50%, -70%) scale(1.08) }
+      100%{ opacity:1; transform: translate(-50%, -66%) scale(1.00) }
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.40);
+      border: 1px solid rgba(210,185,255,.24);
+      box-shadow: 0 22px 55px rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      font-weight: 950;
+      letter-spacing: .3px;
+      font-size: 22px;
+    }
+    .sub{
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      text-shadow: 0 14px 30px rgba(0,0,0,.45);
+    }
+
+    /* ===== A/B/C 特效 ===== */
+    .fx{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index: 40;
+      overflow:hidden;
+    }
+    .spark{
+      position:absolute;
+      width:8px;height:8px;
+      border-radius:2px;
+      opacity:0;
+      transform: translate(-50%,-50%);
+      animation: spark 900ms ease-out forwards;
+      box-shadow: 0 0 18px rgba(255,255,255,.55);
+    }
+    @keyframes spark{
+      0%{ opacity:0; transform: translate(var(--x0), var(--y0)) scale(.6) rotate(0deg) }
+      15%{ opacity:1 }
+      100%{ opacity:0; transform: translate(var(--x1), var(--y1)) scale(1.2) rotate(280deg) }
+    }
+    .shine{
+      position:absolute;
+      inset:-20%;
+      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.55), transparent 60%);
+      transform: translateX(-70%) rotate(10deg);
+      animation: shine 650ms ease-out forwards;
+      opacity:0;
+    }
+    @keyframes shine{
+      0%{ opacity:0; transform: translateX(-70%) rotate(12deg) }
+      30%{ opacity:1 }
+      100%{ opacity:0; transform: translateX(70%) rotate(12deg) }
+    }
+
+    /* ===== 奖池（盒子下半部分） ===== */
+    .pool{
+      width:100%;
+      margin-top: 10px;
+      padding: 10px 10px 4px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(210,185,255,.16);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .item{
+      background: rgba(0,0,0,.26);
+      border: 1px solid rgba(210,185,255,.16);
+      border-radius: 18px;
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .name{
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .pill{
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(210,185,255,.16);
+      color: rgba(244,236,255,.92);
+      white-space:nowrap;
+    }
+    .total{
+      margin: 10px 0 6px;
+      text-align:center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* 按钮 */
+    .actions{
+      display:flex;
+      gap: 10px;
+      padding: 12px 16px 16px;
+    }
+    button{
+      flex:1;
+      border:0;
+      padding: 12px 12px;
+      border-radius: 999px;
+      font-weight: 950;
+      letter-spacing:.3px;
+      cursor:pointer;
+      box-shadow: 0 20px 50px rgba(0,0,0,.45);
+      transition: transform .08s ease;
+    }
+    button:active{ transform: scale(.98) }
+    .btnMain{
+      background: linear-gradient(135deg, rgba(255,121,198,.95), rgba(167,139,250,.95));
+      color: #120a22;
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(210,185,255,.18);
+      color: var(--text);
+    }
+    .hint{
+      padding: 0 16px 16px;
+      text-align:center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 380px){
+      .grid{ grid-template-columns: 1fr; }
+      .scene{ width: 240px; height: 190px; }
+      .cube .face{ border-radius: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <h1>🎀 远远の一番くじ 🎀</h1>
+        <p>朋友专用 · 趣味抽赏（无支付）</p>
+      </div>
+
+      <div class="boxZone">
+        <div class="stage" id="stage">
+          <div class="groundGlow"></div>
+
+          <div class="scene">
+            <div class="boxRig" id="boxRig">
+              <!-- 盖子 -->
+              <div class="lid" id="lid">
+                <div class="lidTop"></div>
+                <div class="lidLip"></div>
+              </div>
+
+              <!-- 盒子本体 -->
+              <div class="cube">
+                <div class="face front">
+                  <div class="mark"><span>?</span></div>
+                  <div class="neonEdge"></div>
+                </div>
+                <div class="face right"></div>
+                <div class="face topBase"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 特效层 -->
+          <div class="fx" id="fx"></div>
+        </div>
+
+        <!-- 奖池 -->
+        <div class="pool">
+          <div class="grid" id="poolGrid"></div>
+          <div class="total" id="totalText">总剩余：— 抽</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btnMain" id="drawBtn">抽一次</button>
+        <button class="btnGhost" id="resetBtn">重置奖池</button>
+      </div>
+      <div class="hint" id="hint">提示：抽到 A/B/C 会有庆祝特效 ✨</div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ 在这里改数量（你要的：A1 B1 C1 D2 E2 F3）
+    const initialPrizes = [
+      { name: "A赏", count: 1 },
+      { name: "B赏", count: 1 },
+      { name: "C赏", count: 1 },
+      { name: "D赏", count: 2 },
+      { name: "E赏", count: 2 },
+      { name: "F赏", count: 3 },
+    ];
+    let prizes = structuredClone(initialPrizes);
+
+    const poolGrid = document.getElementById("poolGrid");
+    const totalText = document.getElementById("totalText");
+    const hint = document.getElementById("hint");
+
+    const drawBtn = document.getElementById("drawBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const boxRig = document.getElementById("boxRig");
+    const lid = document.getElementById("lid");
+    const stage = document.getElementById("stage");
+    const fx = document.getElementById("fx");
+
+    function totalLeft(){ return prizes.reduce((s,p)=>s+p.count,0); }
+    function iconFor(name){ return (name==="A赏"||name==="B赏"||name==="C赏") ? "✨" : "🎀"; }
+
+    function renderPool(){
+      poolGrid.innerHTML = prizes.map(p => `
+        <div class="item">
+          <div class="name">${iconFor(p.name)} ${p.name}</div>
+          <div class="pill">剩余：<b>${p.count}</b></div>
+        </div>
+      `).join("");
+      totalText.textContent = `总剩余：${totalLeft()} 抽`;
+      drawBtn.disabled = totalLeft() === 0;
+      drawBtn.style.opacity = drawBtn.disabled ? 0.55 : 1;
+      hint.textContent = totalLeft()===0 ? "已经全部抽完啦（可点重置）" : "提示：抽到 A/B/C 会有庆祝特效 ✨";
+    }
+
+    function pickOne(){
+      const pool = prizes.filter(p => p.count > 0);
+      if(pool.length === 0) return null;
+      const picked = pool[Math.floor(Math.random() * pool.length)];
+      picked.count -= 1;
+      return picked;
+    }
+
+    function clearEffects(){
+      fx.innerHTML = "";
+      const old = document.querySelector(".prizePop");
+      if(old) old.remove();
+    }
+
+    function celebrate(){
+      const shine = document.createElement("div");
+      shine.className = "shine";
+      fx.appendChild(shine);
+
+      const colors = ["rgba(255,121,198,.95)","rgba(167,139,250,.95)","rgba(255,210,122,.90)","rgba(255,255,255,.92)"];
+      const cx = 50, cy = 48;
+      for(let i=0;i<32;i++){
+        const s = document.createElement("div");
+        s.className = "spark";
+        s.style.background = colors[i % colors.length];
+
+        const x0 = `${cx + (Math.random()*10-5)}%`;
+        const y0 = `${cy + (Math.random()*10-6)}%`;
+        const dx = (Math.random() * 160 - 80);
+        const dy = (Math.random() * 180 - 40);
+
+        s.style.setProperty("--x0", `calc(${x0} - 0px)`);
+        s.style.setProperty("--y0", `calc(${y0} - 0px)`);
+        s.style.setProperty("--x1", `calc(${x0} + ${dx}px)`);
+        s.style.setProperty("--y1", `calc(${y0} + ${dy}px)`);
+
+        s.style.left = x0;
+        s.style.top  = y0;
+        s.style.animationDelay = `${Math.random()*140}ms`;
+        fx.appendChild(s);
+      }
+    }
+
+    function showPop(picked){
+      const left = totalLeft();
+      const isTop = ["A赏","B赏","C赏"].includes(picked.name);
+
+      const pop = document.createElement("div");
+      pop.className = "prizePop";
+      pop.innerHTML = `
+        <div class="badge">${isTop ? "🎉" : "🎀"} 恭喜抽中 ${picked.name}</div>
+        <div class="sub">当前还剩 ${left} 抽</div>
+      `;
+      stage.appendChild(pop);
+
+      if(isTop) celebrate();
+
+      setTimeout(()=>{
+        pop.style.transition = "opacity .25s ease";
+        pop.style.opacity = "0";
+        setTimeout(()=>pop.remove(), 260);
+      }, 1400);
+    }
+
+    function openLid(){
+      lid.classList.remove("close");
+      lid.classList.remove("open");
+      void lid.offsetWidth;
+      lid.classList.add("open");
+    }
+    function closeLid(){
+      lid.classList.remove("open");
+      lid.classList.remove("close");
+      void lid.offsetWidth;
+      lid.classList.add("close");
+    }
+
+    let busy = false;
+
+    function doDraw(){
+      if(busy) return;
+
+      if(totalLeft() === 0){
+        clearEffects();
+        const pop = document.createElement("div");
+        pop.className = "prizePop";
+        pop.innerHTML = `
+          <div class="badge">🎀 已经抽完啦</div>
+          <div class="sub">点击“重置奖池”可重新开始</div>
+        `;
+        stage.appendChild(pop);
+        setTimeout(()=>pop.remove(), 1200);
+        return;
+      }
+
+      busy = true;
+      drawBtn.disabled = true;
+      clearEffects();
+
+      // 1) 先摇晃
+      boxRig.classList.remove("shake");
+      void boxRig.offsetWidth;
+      boxRig.classList.add("shake");
+
+      // 2) 摇晃中段开盖
+      setTimeout(()=> openLid(), 180);
+
+      // 3) 开盖后出奖
+      setTimeout(()=>{
+        const picked = pickOne();
+        renderPool();
+        showPop(picked);
+      }, 420);
+
+      // 4) 盖子合回去（稍晚一点）
+      setTimeout(()=> closeLid(), 980);
+
+      // 5) 恢复按钮
+      setTimeout(()=>{
+        boxRig.classList.remove("shake");
+        drawBtn.disabled = totalLeft() === 0;
+        drawBtn.style.opacity = drawBtn.disabled ? 0.55 : 1;
+        busy = false;
+      }, 1050);
+    }
+
+    drawBtn.addEventListener("click", doDraw);
+
+    resetBtn.addEventListener("click", ()=>{
+      prizes = structuredClone(initialPrizes);
+      renderPool();
+      clearEffects();
+      closeLid();
+
+      const pop = document.createElement("div");
+      pop.className = "prizePop";
+      pop.innerHTML = `
+        <div class="badge">✨ 奖池已重置</div>
+        <div class="sub">可以重新开始抽啦～</div>
+      `;
+      stage.appendChild(pop);
+      setTimeout(()=>pop.remove(), 900);
+    });
+
+    renderPool();
+  </script>
+</body>
+</html>
