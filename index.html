@@ -36,252 +36,6 @@
       overflow-x:hidden;
     }
 
-    /* =========================
-       进入界面（主菜单）
-       ========================= */
-    .menu{
-      position:fixed;
-      inset:0;
-      z-index: 999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 22px;
-      background:
-        radial-gradient(900px 520px at 50% 10%, rgba(167,139,250,.34), transparent 60%),
-        radial-gradient(800px 540px at 20% 75%, rgba(255,121,198,.18), transparent 60%),
-        linear-gradient(180deg, #06030b, #120727 55%, #1a0b33);
-    }
-    .menu.hide{
-      animation: menuOut .35s ease forwards;
-      pointer-events:none;
-    }
-    @keyframes menuOut{
-      to{ opacity:0; transform: translateY(10px); }
-    }
-
-    .menuCard{
-      width: min(620px, 94vw);
-      border-radius: 26px;
-      border: 1px solid rgba(210,185,255,.22);
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      box-shadow: 0 26px 80px rgba(0,0,0,.55);
-      overflow:hidden;
-      position:relative;
-      backdrop-filter: blur(10px);
-    }
-    .menuTop{
-      padding: 18px 18px 12px;
-      text-align:center;
-      background:
-        radial-gradient(560px 180px at 50% 0%, rgba(255,121,198,.12), transparent 70%),
-        radial-gradient(560px 180px at 50% 0%, rgba(167,139,250,.22), transparent 60%);
-      border-bottom: 1px dashed rgba(210,185,255,.18);
-    }
-    .menuTitle{
-      margin:0;
-      font-size: 26px;
-      letter-spacing: 1px;
-      text-shadow: 0 14px 40px rgba(0,0,0,.45);
-    }
-    .menuSub{
-      margin: 8px 0 0;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .menuBody{
-      padding: 16px 18px 10px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 14px;
-    }
-    @media (max-width: 520px){
-      .menuBody{ grid-template-columns: 1fr; }
-    }
-
-    .menuLeft{
-      border-radius: 22px;
-      border: 1px solid rgba(210,185,255,.16);
-      background: rgba(0,0,0,.22);
-      padding: 14px;
-      position:relative;
-      overflow:hidden;
-    }
-    .menuLeft::after{
-      content:"";
-      position:absolute; inset:-20%;
-      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.10), transparent 60%);
-      transform: translateX(-70%) rotate(10deg);
-      animation: shineSweep 2.8s ease-in-out infinite;
-      pointer-events:none;
-      opacity:.9;
-    }
-    @keyframes shineSweep{
-      0%{ transform: translateX(-70%) rotate(12deg); opacity:.0 }
-      25%{ opacity:.8 }
-      55%{ opacity:.3 }
-      100%{ transform: translateX(70%) rotate(12deg); opacity:0 }
-    }
-
-    .menuBadge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(210,185,255,.18);
-      font-weight: 900;
-      letter-spacing:.3px;
-      margin-bottom: 10px;
-    }
-    .menuText{
-      margin: 0;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-      text-align:left;
-    }
-
-    .menuRight{
-      border-radius: 22px;
-      border: 1px solid rgba(210,185,255,.16);
-      background: rgba(0,0,0,.18);
-      padding: 12px;
-    }
-
-    .panelTitle{
-      margin: 0 0 8px;
-      font-weight: 950;
-      font-size: 14px;
-      letter-spacing: .3px;
-      text-align:left;
-      color: rgba(244,236,255,.92);
-    }
-
-    .menuActions{
-      padding: 0 18px 16px;
-      display:flex;
-      gap: 10px;
-    }
-    .btn{
-      flex:1;
-      border:0;
-      padding: 12px 12px;
-      border-radius: 999px;
-      font-weight: 950;
-      letter-spacing:.3px;
-      cursor:pointer;
-      box-shadow: 0 20px 50px rgba(0,0,0,.45);
-      transition: transform .08s ease;
-    }
-    .btn:active{ transform: scale(.98) }
-    .btnMain{
-      background: linear-gradient(135deg, rgba(255,121,198,.95), rgba(167,139,250,.95));
-      color: #120a22;
-    }
-    .btnGhost{
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(210,185,255,.18);
-      color: var(--text);
-    }
-
-    .menuFooter{
-      padding: 0 18px 18px;
-      text-align:center;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* Rule / Gallery 弹窗 */
-    .modal{
-      position: fixed;
-      inset: 0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      background: rgba(0,0,0,.55);
-      z-index: 1000;
-    }
-    .modal.show{ display:flex; }
-    .modalCard{
-      width: min(640px, 94vw);
-      max-height: min(80vh, 680px);
-      overflow:auto;
-      border-radius: 22px;
-      border: 1px solid rgba(210,185,255,.22);
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      box-shadow: 0 26px 80px rgba(0,0,0,.65);
-      backdrop-filter: blur(10px);
-    }
-    .modalHead{
-      padding: 14px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      border-bottom: 1px dashed rgba(210,185,255,.18);
-      background:
-        radial-gradient(520px 160px at 50% 0%, rgba(167,139,250,.22), transparent 60%),
-        radial-gradient(520px 160px at 50% 0%, rgba(255,121,198,.10), transparent 70%);
-    }
-    .modalHead h3{
-      margin:0;
-      font-size: 16px;
-      font-weight: 950;
-      letter-spacing:.3px;
-    }
-    .closeX{
-      border: 1px solid rgba(210,185,255,.20);
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 8px 12px;
-      cursor:pointer;
-      font-weight: 900;
-    }
-    .modalBody{
-      padding: 14px 16px 16px;
-      color: rgba(244,236,255,.86);
-      font-size: 13px;
-      line-height: 1.7;
-      text-align:left;
-    }
-
-    .galleryGrid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    @media (max-width: 520px){
-      .galleryGrid{ grid-template-columns: repeat(2, 1fr); }
-    }
-    .gItem{
-      border-radius: 16px;
-      border: 1px solid rgba(210,185,255,.16);
-      background: rgba(0,0,0,.22);
-      overflow:hidden;
-      aspect-ratio: 1/1;
-      display:grid;
-      place-items:center;
-    }
-    .gItem img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-    .gItem span{
-      font-size: 12px;
-      color: rgba(244,236,255,.70);
-      padding: 0 10px;
-      text-align:center;
-    }
-
-    /* =========================
-       主页面（抽奖界面）
-       ========================= */
     .wrap{
       width:min(560px, 92vw);
       margin: 18px auto 56px;
@@ -318,6 +72,7 @@
       color: var(--muted);
     }
 
+    /* ===== 舞台 / 盲盒 ===== */
     .boxZone{
       padding: 14px 16px 12px;
       display:flex;
@@ -338,6 +93,7 @@
       border-radius: 22px;
     }
 
+    /* 地面基础光圈 */
     .groundGlow{
       position:absolute;
       width: 300px;
@@ -352,7 +108,7 @@
       pointer-events:none;
     }
 
-    /* 稀有奖打光层 */
+    /* 稀有奖打光层（A金/B紫/C粉） */
     .rarityGlow{
       position:absolute;
       inset: 0;
@@ -360,6 +116,9 @@
       pointer-events:none;
       opacity:0;
       transition: opacity .25s ease;
+      background:
+        radial-gradient(420px 220px at 50% 55%, rgba(255,255,255,.10), transparent 60%),
+        radial-gradient(420px 220px at 50% 55%, rgba(167,139,250,.18), transparent 62%);
       filter: blur(0.2px);
     }
     .stage.glowA .rarityGlow{
@@ -381,6 +140,7 @@
         radial-gradient(520px 260px at 50% 56%, rgba(255,255,255,.14), transparent 66%);
     }
 
+    /* 3D 透视容器 */
     .scene{
       width: 270px;
       height: 210px;
@@ -389,6 +149,7 @@
       z-index:2;
     }
 
+    /* 整个盒子（可摇晃） */
     .boxRig{
       width: 100%;
       height: 100%;
@@ -412,6 +173,7 @@
       100%{ transform: translateY(6px) rotateX(18deg) rotateY(-18deg) translateX(0) rotateZ(0deg) }
     }
 
+    /* 盒子本体 */
     .cube{
       position:absolute;
       left: 50%;
@@ -494,6 +256,7 @@
       pointer-events:none;
     }
 
+    /* ===== 盖子（开合） ===== */
     .lid{
       position:absolute;
       left: 50%;
@@ -529,19 +292,24 @@
       opacity:.8;
     }
 
-    .lid.open{ animation: lidOpen .60s cubic-bezier(.2,.9,.2,1) forwards; }
+    .lid.open{
+      animation: lidOpen .60s cubic-bezier(.2,.9,.2,1) forwards;
+    }
     @keyframes lidOpen{
       0%{ transform: translate(-50%, -50%) rotateX(0deg) }
       45%{ transform: translate(-50%, -58%) rotateX(-42deg) }
       100%{ transform: translate(-50%, -60%) rotateX(-55deg) }
     }
 
-    .lid.close{ animation: lidClose .35s ease forwards; }
+    .lid.close{
+      animation: lidClose .35s ease forwards;
+    }
     @keyframes lidClose{
       0%{ transform: translate(-50%, -60%) rotateX(-55deg) }
       100%{ transform: translate(-50%, -50%) rotateX(0deg) }
     }
 
+    /* ===== 奖品弹出：慢一点、从盒子里出来变大 ===== */
     .prizePop{
       position:absolute;
       left: 50%;
@@ -599,6 +367,7 @@
       text-shadow: 0 14px 30px rgba(0,0,0,.45);
     }
 
+    /* ===== A/B/C 庆祝粒子 ===== */
     .fx{
       position:absolute;
       inset:0;
@@ -621,6 +390,7 @@
       100%{ opacity:0; transform: translate(var(--x1), var(--y1)) scale(1.25) rotate(280deg) }
     }
 
+    /* ===== 奖池（剩余） ===== */
     .pool{
       width:100%;
       margin-top: 10px;
@@ -666,6 +436,7 @@
       color: var(--muted);
     }
 
+    /* 按钮 */
     .actions{
       display:flex;
       gap: 10px;
@@ -698,85 +469,12 @@
       font-size: 12px;
       color: var(--muted);
     }
+
   </style>
 </head>
 
 <body>
-  <!-- 进入界面 -->
-  <div class="menu" id="menu">
-    <div class="menuCard">
-      <div class="menuTop">
-        <h2 class="menuTitle">🎀 远远の一番くじ 🎀</h2>
-        <p class="menuSub">像游戏主页面一样：Start / Rule / Gallery</p>
-      </div>
 
-      <div class="menuBody">
-        <div class="menuLeft">
-          <div class="menuBadge">✨ Rare Glow：A=金光 / B=紫光 / C=粉光（无屏幕震动）</div>
-          <p class="menuText">
-            · 点击「START」进入抽赏界面<br/>
-            · 抽一次：盒子摇晃 → 开盖 → 奖品慢慢变大弹出<br/>
-            · 奖池会扣减，抽完可重置<br/>
-            · Gallery 可以放你想展示的几张图片
-          </p>
-        </div>
-
-        <div class="menuRight">
-          <p class="panelTitle">快速说明</p>
-          <div class="menuText">
-            想放图片：把图片上传到仓库的 <b>assets/</b> 文件夹，然后在 Gallery 里写 <b>assets/xxx.jpg</b> 就能显示。
-          </div>
-        </div>
-      </div>
-
-      <div class="menuActions">
-        <button class="btn btnMain" id="startBtn">START</button>
-        <button class="btn btnGhost" id="ruleBtn">RULE</button>
-        <button class="btn btnGhost" id="galleryBtn">GALLERY</button>
-      </div>
-
-      <div class="menuFooter">提示：如果手机缓存没更新，用 ?v=999 刷新即可。</div>
-    </div>
-  </div>
-
-  <!-- Rule 弹窗 -->
-  <div class="modal" id="ruleModal">
-    <div class="modalCard">
-      <div class="modalHead">
-        <h3>RULE · 玩法说明</h3>
-        <button class="closeX" data-close="ruleModal">关闭</button>
-      </div>
-      <div class="modalBody">
-        <b>玩法：</b>点击「抽一次」进行抽赏。<br/>
-        <b>稀有光效：</b>A=金光 / B=紫光 / C=粉光，并有庆祝粒子。<br/>
-        <b>奖池：</b>抽到的奖项会从剩余数量中扣减，抽完可点「重置奖池」重新开始。<br/><br/>
-        <b>修改奖池数量：</b>在代码里找到 <code>initialPrizes</code>，改每个奖项的 count。<br/>
-      </div>
-    </div>
-  </div>
-
-  <!-- Gallery 弹窗 -->
-  <div class="modal" id="galleryModal">
-    <div class="modalCard">
-      <div class="modalHead">
-        <h3>GALLERY · 图片展示</h3>
-        <button class="closeX" data-close="galleryModal">关闭</button>
-      </div>
-      <div class="modalBody">
-        <div class="galleryGrid" id="galleryGrid">
-          <!-- JS 会渲染 -->
-        </div>
-        <hr style="border:0;border-top:1px dashed rgba(210,185,255,.18);margin:14px 0;">
-        <b>怎么放图片：</b><br/>
-        1）在 GitHub 仓库里点 <b>Add file → Upload files</b><br/>
-        2）建议新建文件夹 <b>assets</b>（没有就先创建），把图片传进去<br/>
-        3）图片路径示例：<code>assets/1.jpg</code>、<code>assets/kuromi1.png</code><br/>
-        4）然后在代码里找到 <code>galleryImages</code> 数组，把路径填进去即可<br/>
-      </div>
-    </div>
-  </div>
-
-  <!-- 抽奖页面 -->
   <div class="wrap">
     <div class="card">
       <div class="header">
@@ -820,42 +518,12 @@
         <button class="btnMain" id="drawBtn">抽一次</button>
         <button class="btnGhost" id="resetBtn">重置奖池</button>
       </div>
-      <div class="hint" id="hint"></div>
+      <div class="hint" id="hint">提示：A/B/C 有稀有光效 + 庆祝特效 ✨</div>
     </div>
   </div>
 
   <script>
-    /* =========================
-       Gallery：在这里写图片路径
-       上传到仓库 assets/ 目录后填入
-       ========================= */
-    const galleryImages = [
-      // 示例： "assets/1.jpg",
-      // 示例： "assets/2.png",
-      // 示例： "assets/3.webp",
-    ];
-
-    function renderGallery(){
-      const grid = document.getElementById("galleryGrid");
-      if(!galleryImages.length){
-        grid.innerHTML = `
-          <div class="gItem"><span>还没有图片<br/>把图片上传到 assets/ 后，在 galleryImages 里写路径</span></div>
-          <div class="gItem"><span>例如：assets/1.jpg</span></div>
-          <div class="gItem"><span>例如：assets/2.png</span></div>
-          <div class="gItem"><span>例如：assets/3.webp</span></div>
-          <div class="gItem"><span>最多可放很多张</span></div>
-          <div class="gItem"><span>上传后刷新页面即可</span></div>
-        `;
-        return;
-      }
-      grid.innerHTML = galleryImages.map(src => `
-        <div class="gItem"><img src="${src}" alt="gallery"></div>
-      `).join("");
-    }
-
-    /* =========================
-       奖池（可修改数量）
-       ========================= */
+    // ✅ 在这里改数量：A1 B1 C1 D2 E2 F3
     const initialPrizes = [
       { name: "A赏", count: 1 },
       { name: "B赏", count: 1 },
@@ -892,7 +560,7 @@
 
       drawBtn.disabled = totalLeft() === 0;
       drawBtn.style.opacity = drawBtn.disabled ? 0.55 : 1;
-      hint.textContent = totalLeft()===0 ? "已经全部抽完啦（可点重置）" : "提示：A/B/C 有稀有光效 + 庆祝特效 ✨（无震动）";
+      hint.textContent = totalLeft()===0 ? "已经全部抽完啦（可点重置）" : "提示：A/B/C 有稀有光效 + 庆祝特效 ✨";
     }
 
     function pickOne(){
@@ -958,10 +626,12 @@
 
       if(isTop) celebrate();
 
+      // 2s 后自动淡出
       setTimeout(()=>{
         pop.style.transition = "opacity .25s ease";
         pop.style.opacity = "0";
         setTimeout(()=>pop.remove(), 260);
+        // 稀有打光也淡出
         setTimeout(()=> stage.classList.remove("glowA","glowB","glowC"), 260);
       }, 2000);
     }
@@ -999,20 +669,25 @@
       drawBtn.disabled = true;
       clearEffects();
 
+      // 1) 先摇晃
       boxRig.classList.remove("shake");
       void boxRig.offsetWidth;
       boxRig.classList.add("shake");
 
+      // 2) 摇晃中段开盖
       setTimeout(()=> openLid(), 190);
 
+      // 3) 开盖后“慢一点”出奖
       setTimeout(()=>{
         const picked = pickOne();
         renderPool();
         showPop(picked);
       }, 520);
 
+      // 4) 稍晚合盖
       setTimeout(()=> closeLid(), 1180);
 
+      // 5) 恢复按钮
       setTimeout(()=>{
         boxRig.classList.remove("shake");
         drawBtn.disabled = totalLeft() === 0;
@@ -1037,45 +712,6 @@
       `;
       stage.appendChild(pop);
       setTimeout(()=>pop.remove(), 1100);
-    });
-
-    /* =========================
-       菜单交互
-       ========================= */
-    const menu = document.getElementById("menu");
-    const startBtn = document.getElementById("startBtn");
-    const ruleBtn = document.getElementById("ruleBtn");
-    const galleryBtn = document.getElementById("galleryBtn");
-
-    const ruleModal = document.getElementById("ruleModal");
-    const galleryModal = document.getElementById("galleryModal");
-
-    startBtn.addEventListener("click", ()=>{
-      menu.classList.add("hide");
-      setTimeout(()=> menu.style.display="none", 360);
-    });
-
-    ruleBtn.addEventListener("click", ()=>{
-      ruleModal.classList.add("show");
-    });
-
-    galleryBtn.addEventListener("click", ()=>{
-      renderGallery();
-      galleryModal.classList.add("show");
-    });
-
-    document.querySelectorAll(".closeX").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const id = btn.getAttribute("data-close");
-        document.getElementById(id).classList.remove("show");
-      });
-    });
-
-    // 点击遮罩关闭
-    [ruleModal, galleryModal].forEach(m=>{
-      m.addEventListener("click", (e)=>{
-        if(e.target === m) m.classList.remove("show");
-      });
     });
 
     renderPool();
